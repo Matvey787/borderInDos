@@ -39,13 +39,14 @@
     ; -----------------------------------
 
     ; macro for calling CreateBoxPart
-CreateBoxPartMacro macro outerStart, innerStart, OffsetForOuter, OffsetForInner, startX, startY, symbolOffset,  colorOffset
+CreateBoxPartMacro macro OffsetForOuter, OffsetForInner, fixOuter, fixInner, startX, startY, symbolOffset,  colorOffset
+
     mov al, [boxParameters + OffsetForOuter]
+    sub al, fixOuter
     mov ah, [boxParameters + OffsetForInner]
+    sub ah, fixInner
     mov bl, [si + symbolOffset]
     mov bh, [boxParameters + colorOffset]
-    mov byte ptr [strData + 0], outerStart
-    mov byte ptr [strData + 1], innerStart
     mov byte ptr [strData + 2], al
     mov byte ptr [strData + 3], ah
     mov byte ptr [strData + 4], startX
@@ -299,7 +300,7 @@ BoxInfoProc proc
     mov dx, offset boxBorderSymbols
     mov si, dx
     ;-------------------- top center line --------------------
-    CreateBoxPartMacro 1, 1, 4, 0, 0, 0, 1, 2
+    CreateBoxPartMacro 4, 0, 0, 1, 0, 0, 1, 2
     ;mov al, [boxParameters]
     ;mov byte ptr [strData + 2], 1     ; Set value for outer loop counter
     ;mov byte ptr [strData + 3], al    ; Set value for inner loop counter
@@ -315,146 +316,177 @@ BoxInfoProc proc
     ;call CreateBoxPart 	; Call the PrtStr procedure
 
     ;-------------------- central box of symbols --------------------
-    mov al, [boxParameters]
-    dec al
-    mov ah, [boxParameters + 1]
-    sub ah, 2
-    mov byte ptr [strData+2], ah    ; Set value for outer loop counter
-    mov byte ptr [strData+3], al    ; Set value for inner loop counter
-
-    mov byte ptr [strData+4], 0     ; Set value for start x coordinate
-    mov byte ptr [strData+5], 1     ; Set value for start y coordinate
-    
-    mov al, [si + 4]                
-    mov byte ptr [strData+6], al    ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
-   
-    call CreateBoxPart 	; Call the PrtStr procedure
+    CreateBoxPartMacro 1, 0, 2, 1, 1, 1, 4, 2
+    ;mov al, [boxParameters]
+    ;dec al
+    ;mov ah, [boxParameters + 1]
+    ;sub ah, 2
+    ;mov byte ptr [strData+2], ah    ; Set value for outer loop counter
+    ;mov byte ptr [strData+3], al    ; Set value for inner loop counter
+;
+    ;mov byte ptr [strData+4], 0     ; Set value for start x coordinate
+    ;mov byte ptr [strData+5], 1     ; Set value for start y coordinate
+    ;
+    ;mov al, [si + 4]                
+    ;mov byte ptr [strData+6], al    ; Load a char byte from memory
+    ;mov al, [boxParameters + 2]
+    ;mov byte ptr [strData + 7], al   ; set value for color
+   ;
+    ;call CreateBoxPart 	; Call the PrtStr procedure
 
     ;-------------------- bottom center line --------------------
-    mov ah, [boxParameters + 1]
-    sub ah, 1
-    mov al, [boxParameters]
-    mov byte ptr [strData+2], 1     ; Set value for outer loop counter
-    mov byte ptr [strData+3], al    ; Set value for inner loop counter
-    
-    mov byte ptr [strData+4], 0     ; Set value for start x coordinate
-    mov byte ptr [strData+5], ah    ; Set value for start y coordinate
-
-    mov al, [si + 7]
-    mov byte ptr [strData+6], al    ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
-    
-    call CreateBoxPart 	                ; Call the PrtStr procedure
+    mov cl,  [boxParameters + 1]
+    dec cl
+    CreateBoxPartMacro 4, 0, 0, 0, 0, cl, 7, 2
+    ;mov ah, [boxParameters + 1]
+    ;sub ah, 1
+    ;mov al, [boxParameters]
+    ;mov byte ptr [strData+2], 1     ; Set value for outer loop counter
+    ;mov byte ptr [strData+3], al    ; Set value for inner loop counter
+    ;
+    ;mov byte ptr [strData+4], 0     ; Set value for start x coordinate
+    ;mov byte ptr [strData+5], ah    ; Set value for start y coordinate
+;
+    ;mov al, [si + 7]
+    ;mov byte ptr [strData+6], al    ; Load a char byte from memory
+    ;mov al, [boxParameters + 2]
+    ;mov byte ptr [strData + 7], al   ; set value for color
+    ;
+    ;call CreateBoxPart 	                ; Call the PrtStr procedure
     
     ;-------------------- right center line --------------------
-    mov ah, [boxParameters+1]
-    sub ah, 2
-    mov al, [boxParameters]
-    sub al, 1
-    mov byte ptr [strData+2], ah    ; Set value for outer loop counter
-    mov byte ptr [strData+3], 1     ; Set value for inner loop counter
-
-    mov byte ptr [strData+4], al  ; Set value for start x coordinate
-    mov byte ptr [strData+5], 1   ; Set value for start y coordinate
-
-    mov al, [si + 5]           
-    mov byte ptr [strData+6], al   ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
- 
-    call CreateBoxPart 	               ; Call the PrtStr procedure
+    mov cl,  [boxParameters]
+    dec cl
+    CreateBoxPartMacro 1, 4, 1, 0, cl, 1, 5, 2
+    ;mov ah, [boxParameters+1]
+    ;sub ah, 2
+    ;mov al, [boxParameters]
+    ;sub al, 1
+    ;mov byte ptr [strData+2], ah    ; Set value for outer loop counter
+    ;mov byte ptr [strData+3], 1     ; Set value for inner loop counter
+;
+    ;mov byte ptr [strData+4], al  ; Set value for start x coordinate
+    ;mov byte ptr [strData+5], 1   ; Set value for start y coordinate
+;
+    ;mov al, [si + 5]           
+    ;mov byte ptr [strData+6], al   ; Load a char byte from memory
+    ;mov al, [boxParameters + 2]
+    ;mov byte ptr [strData + 7], al   ; set value for color
+    ;mov byte ptr [strData], 0
+    ;mov byte ptr [strData + 1], 0
+    ;call CreateBoxPart 	               ; Call the PrtStr procedure
 
     ;-------------------- left center line --------------------
-    mov ah, [boxParameters+1]
-    sub ah, 2
-    mov byte ptr [strData+2], ah    ; Set value for outer loop counter
-    mov al, [boxParameters]
-    mov byte ptr [strData+3], 1     ; Set value for inner loop counter
-    mov byte ptr [strData+4], 0
-    mov byte ptr [strData+5], 1
-    mov al, [si + 3]               
-    mov byte ptr [strData+6], al    ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
-    
-    call CreateBoxPart 	                ; Call the PrtStr procedure
+    CreateBoxPartMacro 1, 4, 1, 0, 0, 1, 3, 2
+    ; mov ah, [boxParameters+1]
+    ; sub ah, 2
+    ; mov byte ptr [strData+2], ah    ; Set value for outer loop counter
+    ; mov al, [boxParameters]
+    ; mov byte ptr [strData+3], 1     ; Set value for inner loop counter
+    ; mov byte ptr [strData+4], 0
+    ; mov byte ptr [strData+5], 1
+    ; mov al, [si + 3]               
+    ; mov byte ptr [strData+6], al    ; Load a char byte from memory
+    ; mov al, [boxParameters + 2]
+    ; mov byte ptr [strData + 7], al   ; set value for color
+    ; mov byte ptr [strData], 0
+    ; mov byte ptr [strData + 1], 0
+    ; call CreateBoxPart 	                ; Call the PrtStr procedure
 
     ;-------------------- left top corner --------------------
-    mov byte ptr [strData+2], 1     ; Set value for outer loop counter
-    mov byte ptr [strData+3], 1     ; Set value for inner loop counter
-    mov byte ptr [strData+4], 0
-    mov byte ptr [strData+5], 0
-    mov al, [si]                   
-    mov byte ptr [strData+6], al    ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
 
-    call CreateBoxPart 	                ; Call the PrtStr procedure
+    CreateBoxPartMacro 4, 4, 0, 0, 0, 0, 0, 2
+    ;mov byte ptr [strData+2], 1     ; Set value for outer loop counter
+    ;mov byte ptr [strData+3], 1     ; Set value for inner loop counter
+    ;mov byte ptr [strData+4], 0
+    ;mov byte ptr [strData+5], 0
+    ;mov al, [si]                   
+    ;mov byte ptr [strData+6], al    ; Load a char byte from memory
+    ;mov al, [boxParameters + 2]
+    ;mov byte ptr [strData + 7], al   ; set value for color
+    ;mov byte ptr [strData], 0
+    ;mov byte ptr [strData + 1], 0
+    ;call CreateBoxPart 	                ; Call the PrtStr procedure
     
     ;-------------------- right top corner --------------------
-    mov al, [boxParameters]
-    sub al, 1
-    mov byte ptr [strData+2], 1    ; Set value for outer loop counter
-    mov byte ptr [strData+3], 1    ; Set value for inner loop counter
-    mov byte ptr [strData+4], al
-    mov byte ptr [strData+5], 0
-    mov al, [si+2]                 
-    mov byte ptr [strData+6], al   ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
+    mov cl,  [boxParameters]
+    dec cl
+    CreateBoxPartMacro 4, 4, 0, 0, cl, 0, 2, 2
 
-    call CreateBoxPart 	               ; Call the PrtStr procedure
+    ; mov al, [boxParameters]
+    ; sub al, 1
+    ; mov byte ptr [strData+2], 1    ; Set value for outer loop counter
+    ; mov byte ptr [strData+3], 1    ; Set value for inner loop counter
+    ; mov byte ptr [strData+4], al
+    ; mov byte ptr [strData+5], 0
+    ; mov al, [si+2]                 
+    ; mov byte ptr [strData+6], al   ; Load a char byte from memory
+    ; mov al, [boxParameters + 2]
+    ; mov byte ptr [strData + 7], al   ; set value for color
+    ; mov byte ptr [strData], 0
+    ; mov byte ptr [strData + 1], 0
+    ; call CreateBoxPart 	               ; Call the PrtStr procedure
     
     ;-------------------- left bottom corner --------------------
-    mov al, [boxParameters]
-    mov ah, [boxParameters+1] 
-    sub ah, 1
-    mov byte ptr [strData+2], 1    ; Set value for outer loop counter
-    mov byte ptr [strData+3], 1    ; Set value for inner loop counter
-    mov byte ptr [strData+4], 0
-    mov byte ptr [strData+5], ah
-    mov al, [si + 6]
-    mov byte ptr [strData+6], al   ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
-
-    call CreateBoxPart 	; Call the PrtStr procedure
-    
-    ;-------------------- right bottom corner --------------------
-    mov al, [boxParameters]
-    sub al, 1
-    mov ah, [boxParameters+1]
-    sub ah, 1
-    mov byte ptr [strData+2], 1    ; Set value for outer loop counter
-    mov byte ptr [strData+3], 1    ; Set value for inner loop counter
-    mov byte ptr [strData+4], al
-    mov byte ptr [strData+5], ah
-    mov al, [si + 8]
-    mov byte ptr [strData+6], al   ; Load a char byte from memory
-    mov al, [boxParameters + 2]
-    mov byte ptr [strData + 7], al   ; set value for color
-
-    call CreateBoxPart 	; Call the PrtStr procedure
-    
-    ;-------------------- print phrase in box --------------------
-    ;mov al, [boxParameters + 1]
-    ;inc al 
-    ;shr al, 1
-    ;mov bh, al
+    mov cl,  [boxParameters + 1]
+    dec cl
+    mov ch,  [boxParameters]
+    dec ch
+    CreateBoxPartMacro 4, 4, 0, 0, 0, cl, 6, 2
 
     ;mov al, [boxParameters]
-    ;shr al, 1
-    ;sub al, 2
-    ;mov ah, bh
-    ;dec ah
+    ;mov ah, [boxParameters+1] 
+    ;sub ah, 1
+    ;mov byte ptr [strData+2], 1    ; Set value for outer loop counter
+    ;mov byte ptr [strData+3], 1    ; Set value for inner loop counter
+    ;mov byte ptr [strData+4], 0
+    ;mov byte ptr [strData+5], ah
+    ;mov al, [si + 6]
+    ;mov byte ptr [strData+6], al   ; Load a char byte from memory
+    ;mov al, [boxParameters + 2]
+    ;mov byte ptr [strData + 7], al   ; set value for color
+    ;mov byte ptr [strData], 0
+    ;mov byte ptr [strData + 1], 0
+    ;call CreateBoxPart 	; Call the PrtStr procedure
+    
+    ;-------------------- right bottom corner --------------------
+    mov cl,  [boxParameters + 1]
+    dec cl
+    mov ch,  [boxParameters]
+    dec ch
+    CreateBoxPartMacro 4, 4, 0, 0, ch, cl, 8, 2
+    ; mov al, [boxParameters]
+    ; sub al, 1
+    ; mov ah, [boxParameters+1]
+    ; sub ah, 1
+    ; mov byte ptr [strData+2], 1    ; Set value for outer loop counter
+    ; mov byte ptr [strData+3], 1    ; Set value for inner loop counter
+    ; mov byte ptr [strData+4], al
+    ; mov byte ptr [strData+5], ah
+    ; mov al, [si + 8]
+    ; mov byte ptr [strData+6], al   ; Load a char byte from memory
+    ; mov al, [boxParameters + 2]
+    ; mov byte ptr [strData + 7], al   ; set value for color
+    ; mov byte ptr [strData], 0
+    ; mov byte ptr [strData + 1], 0
+    ; call CreateBoxPart 	; Call the PrtStr procedure
+    ; 
+    ;-------------------- print phrase in box --------------------
+    mov al, [boxParameters + 1]
+    inc al 
+    shr al, 1
+    mov bh, al
+
+    mov al, [boxParameters]
+    shr al, 1
+    sub al, 2
+    mov ah, bh
+    dec ah
 
     mov al, [boxParameters + 1]
     shr al, 1
     mov bh, al
-;
+
     xor ax, ax
     mov al, [boxParameters]
     sub al, [lngth]
@@ -482,7 +514,7 @@ BoxInfoProc proc
     mov bl, [si]
     cmp bl, '$'
     jne phraseFor
-  
+
     ret
 BoxInfoProc endp
     
